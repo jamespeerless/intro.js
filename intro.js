@@ -143,6 +143,9 @@
 
       self._onResize = function(e) {
         _setHelperLayerPosition.call(self, document.querySelector('.introjs-helperLayer'));
+        if (this._options.createMask) {
+          _setHelperLayerPosition.call(self, document.querySelector('.introjs-maskLayer'));
+        }
       };
 
       if (window.addEventListener) {
@@ -247,6 +250,10 @@
     var helperLayer = targetElement.querySelector('.introjs-helperLayer');
     if (helperLayer) {
       helperLayer.parentNode.removeChild(helperLayer);
+    }
+    var maskLayer = targetElement.querySelector('.introjs-maskLayer');
+    if (maskLayer) {
+      maskLayer.parentNode.removeChild(maskLayer);
     }
     //remove `introjs-showElement` class from the element
     var showElement = document.querySelector('.introjs-showElement');
@@ -383,6 +390,14 @@
       //set new position to helper layer
       _setHelperLayerPosition.call(self, oldHelperLayer);
 
+      //set new position to mask layer
+      if (self._options.createMask) {
+        var oldNoninteractiveLayer = document.querySelector('.introjs-maskLayer');
+        if (oldNoninteractiveLayer) {
+          _setHelperLayerPosition.call(self, oldNoninteractiveLayer);
+        }
+      }
+
       //remove `introjs-fixParent` class from the elements
       var fixParents = document.querySelectorAll('.introjs-fixParent');
       if (fixParents && fixParents.length > 0) {
@@ -423,6 +438,14 @@
 
       //add helper layer to target element
       this._targetElement.appendChild(helperLayer);
+
+      //set new position to mask layer
+      if (self._options.createMask) {
+        var maskLayer = document.createElement('div');
+        maskLayer.className = 'introjs-maskLayer';
+        _setHelperLayerPosition.call(self, maskLayer);
+        self._targetElement.appendChild(maskLayer);
+      }
 
       arrowLayer.className = 'introjs-arrow';
 
@@ -761,6 +784,9 @@
     },
     refresh: function() {
       _setHelperLayerPosition.call(this, document.querySelector('.introjs-helperLayer'));
+      if (self._options.createMask) {
+        _setHelperLayerPosition.call(self, document.querySelector('.introjs-maskLayer'));
+      }
       return this;
     },
     onbeforechange: function(providedCallback) {
